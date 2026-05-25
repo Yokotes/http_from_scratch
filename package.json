@@ -1,0 +1,9 @@
+{
+  "name": "my-http-server",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "test": "echo Hi"
+  }
+}
