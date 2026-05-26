@@ -1,15 +1,23 @@
 import fs from "fs";
 import path from "path";
 
-export const loadPublicFile = (filePath = "/index.html") => {
-  try {
-    const file = fs.readFileSync(
-      path.resolve("public", ...filePath.split("/").slice(1)),
-    );
-    return file.toLocaleString();
-  } catch (err) {
-    console.error(err);
+export class FileLoader {
+  static loadPublicFile(filePath) {
+    if (!filePath) throw new Error("File path is undefined");
 
-    return false;
+    // TODO: Решение такое себе... Подумать над иным.
+    const filePathWithLeadingSlash =
+      filePath[0] === "/" ? filePath : "/" + filePath;
+
+    try {
+      const file = fs.readFileSync(
+        path.resolve("public", ...filePathWithLeadingSlash.split("/").slice(1)),
+      );
+      return file.toLocaleString();
+    } catch (err) {
+      console.error("Error while reading file", err);
+
+      return false;
+    }
   }
-};
+}

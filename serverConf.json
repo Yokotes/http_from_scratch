@@ -1,0 +1,13 @@
+{
+  "port": 3001,
+  "route": {
+    "path": "/",
+    "filePath": "index.html",
+    "children": [
+      {
+        "path": "/about",
+        "filePath": "about.html"
+      }
+    ]
+  }
+}

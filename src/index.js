@@ -1,39 +1,15 @@
 import http from "node:http";
-import { loadPublicFile } from "./fileLoader.js";
+import { FileLoader } from "./fileLoader.js";
+import { Config } from "./configLoader.js";
+import { Server } from "./server.js";
 
-const FILE_REGEX = /\/.+\.(js)/;
+const DEFAULT_PORT = 3000;
 
-const server = http.createServer((req, res) => {
-  const { url, method } = req;
+Config.loadConfig();
 
-  if (url === "/" && method === "GET") {
-    const indexFile = loadPublicFile();
+const port = Config.port || DEFAULT_PORT;
+const server = new Server(FileLoader, Config);
 
-    res.writeHead(200, { "content-type": "text/html" });
-    res.end(indexFile);
-
-    return;
-  }
-
-  if (FILE_REGEX.test(url) && method === "GET") {
-    const file = loadPublicFile(url);
-
-    //  Найти другой способ
-    const ext = FILE_REGEX.exec(url)[1];
-
-    if (file) {
-      // Надо бы создать справочник с расширениями и контент тайпами
-      res.writeHead(200, { "content-type": "application/javascript" });
-      res.end(file);
-
-      return;
-    }
-  }
-
-  res.writeHead(404);
-  res.end();
-});
-
-server.listen(3000, "localhost", () => {
-  console.log("Listening...");
+server.run(port, () => {
+  console.log(`Running at ${port} port...`);
 });
