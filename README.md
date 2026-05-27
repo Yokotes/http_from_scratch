@@ -19,4 +19,4 @@ Here are fields:
   - `filePath` - where server will be looking for a html file in public folder. **Required**
   - `children` - array of child routes
 
-Consider already existing `serverConf.json` as example.
+Consider already existing `serverConf.json` as an example.
