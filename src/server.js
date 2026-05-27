@@ -29,7 +29,6 @@ export class Server {
         const file = this._fileLoader.loadPublicFile(url);
 
         if (file) {
-          //  Найти другой способ
           const ext = FILE_REGEX.exec(url)[1];
           const mimeType =
             ext in FILE_EXTENSION_MIME_TYPE

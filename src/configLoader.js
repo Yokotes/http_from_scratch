@@ -16,16 +16,14 @@ const parseRoutes = (rawRoute) => {
   if (!rawRoute) return;
   if (!rawRoute.path && !rawRoute.filePath) return;
 
-  const { path, filePath, children } = rawRoute;
-  let parsedChildren = [];
+  const { path, filePath, children = [] } = rawRoute;
 
-  if (children) {
-    for (const index in children) {
-      const childRoute = parseRoutes(children[index]);
+  if (path.split("/").length > 2)
+    throw Error(`Invalid 'path' field in '${path}' route`);
 
-      if (childRoute) parsedChildren.push(childRoute);
-    }
-  }
+  const parsedChildren = children
+    .map((child) => parseRoutes(child))
+    .filter((child) => !!child);
 
   return new Route(path, filePath, parsedChildren);
 };
@@ -39,7 +37,7 @@ export class Config {
     try {
       configFile = fs.readFileSync("./serverConf.json");
 
-      if (!configFile) throw new Error("Config not found");
+      if (!configFile) throw Error("Config not found");
     } catch (err) {
       console.error("Error while loading config", err);
     }
@@ -52,7 +50,7 @@ export class Config {
     }
 
     if (!parsedConfig.route)
-      throw new Error("Not valid config, 'routes' field required!");
+      throw Error("Not valid config, 'route' field required!");
 
     this.port = parsedConfig.port ?? this.port;
     this.route = parseRoutes(parsedConfig.route);
@@ -71,17 +69,10 @@ const findRouteRecursive = (url, route) => {
 
   const urlArr = url.slice(1).split("/");
   const firstURL = "/" + urlArr.shift();
-  let foundRoute;
+  const found = route.children.find((child) => child.path === firstURL);
 
-  for (const index in route.children) {
-    if (route.children[index].path === firstURL) {
-      foundRoute = route.children[index];
-      break;
-    }
-  }
-
-  if (foundRoute && urlArr.length === 0) return foundRoute;
-  if (foundRoute) return findRouteRecursive("/" + urlArr.join("/"), foundRoute);
+  if (found && urlArr.length === 0) return found;
+  if (found) return findRouteRecursive("/" + urlArr.join("/"), found);
 
   return;
 };

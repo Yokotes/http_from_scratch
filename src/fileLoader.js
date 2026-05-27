@@ -3,7 +3,7 @@ import path from "path";
 
 export class FileLoader {
   static loadPublicFile(filePath) {
-    if (!filePath) throw new Error("File path is undefined");
+    if (!filePath) throw Error("File path is undefined");
 
     // TODO: Решение такое себе... Подумать над иным.
     const filePathWithLeadingSlash =
