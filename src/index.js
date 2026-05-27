@@ -1,4 +1,3 @@
-import http from "node:http";
 import { FileLoader } from "./fileLoader.js";
 import { Config } from "./configLoader.js";
 import { Server } from "./server.js";
